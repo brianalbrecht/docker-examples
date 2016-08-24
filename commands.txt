@@ -1,0 +1,47 @@
+## Get Container List via API - https://docs.docker.com/engine/reference/api/docker_remote_api/
+
+curl --unix-socket /var/run/docker.sock http:/containers/json
+
+### SWARM
+
+## Create local machine
+
+docker-machine create -d virtualbox local
+
+## Set Env Vars to local machine
+
+# Bash
+eval $(docker-machine env local)
+
+# Fish
+eval (docker-machine env local)
+
+# Create Swarm Discovery Token
+docker run swarm create
+
+
+# Create swarm master
+
+docker-machine create \
+        -d virtualbox \
+        --swarm \
+        --swarm-master \
+        --swarm-discovery token://c0525f224169d6ab3ca6f09bef9ab54e \
+        swarm-master
+
+# Create swarm Agent
+
+docker-machine create \
+    -d virtualbox \
+    --swarm \
+    --swarm-discovery token://c0525f224169d6ab3ca6f09bef9ab54e \
+    swarm-agent-00
+
+# Set Env Vars for Swarm
+
+# Bash
+eval $(docker-machine env --swarm swarm-master)
+
+# Fish
+eval (docker-machine env --swarm swarm-master)
+
